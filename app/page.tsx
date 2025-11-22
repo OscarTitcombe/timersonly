@@ -13,6 +13,8 @@ import { useChime } from "@/hooks/useChime";
 import { minutesToSeconds } from "@/lib/time";
 import { darkenColor } from "@/lib/colorUtils";
 import { useEffect, useRef } from "react";
+import { timerConfigs } from "@/lib/timerConfigs";
+import Link from "next/link";
 
 type TimerKind = "simple" | "pomodoro";
 
@@ -130,9 +132,11 @@ export default function HomePage() {
         {/* Main content */}
         <main className="flex flex-1 flex-col items-center justify-center pb-10">
           {kind === "pomodoro" ? (
-            <PomodoroTimer />
+            <div className="pt-4">
+              <PomodoroTimer />
+            </div>
           ) : (
-            <div className="w-full max-w-2xl">
+            <div className="w-full max-w-2xl pt-16">
               {/* Simple timer - numeric only, no hourglass */}
               <NumericTimer
                 defaultMinutes={25}
@@ -143,6 +147,122 @@ export default function HomePage() {
             </div>
           )}
         </main>
+
+        {/* Timer links sections - positioned at bottom, less prominent */}
+        <div className="mt-32 space-y-8 pb-8 opacity-60">
+          {/* Popular minute timers */}
+          {(() => {
+            const popularSimple = timerConfigs.filter(
+              (t) =>
+                t.type === "simple" &&
+                [5, 10, 15, 20, 25, 30].includes(t.minutes)
+            );
+            if (popularSimple.length > 0) {
+              return (
+                <div className="space-y-3">
+                  <h3
+                    className="text-xs font-medium text-center"
+                    style={{ color: theme.text, opacity: 0.6 }}
+                  >
+                    Popular Timers
+                  </h3>
+                  <div className="flex flex-wrap gap-3 justify-center">
+                    {popularSimple.map((t) => (
+                      <Link
+                        key={t.slug}
+                        href={`/t/${t.slug}`}
+                        className="px-3 py-1 rounded-full border text-xs hover:opacity-70 transition"
+                        style={{
+                          borderColor: theme.text + "20",
+                          backgroundColor: theme.cardBg + "66",
+                          color: theme.text,
+                        }}
+                      >
+                        {t.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+            return null;
+          })()}
+
+          {/* Pomodoro timers */}
+          {(() => {
+            const pomodoro = timerConfigs.filter((t) => t.type === "pomodoro");
+            if (pomodoro.length > 0) {
+              return (
+                <div className="space-y-3">
+                  <h3
+                    className="text-xs font-medium text-center"
+                    style={{ color: theme.text, opacity: 0.6 }}
+                  >
+                    Pomodoro Timers
+                  </h3>
+                  <div className="flex flex-wrap gap-3 justify-center">
+                    {pomodoro.map((t) => (
+                      <Link
+                        key={t.slug}
+                        href={`/t/${t.slug}`}
+                        className="px-3 py-1 rounded-full border text-xs hover:opacity-70 transition"
+                        style={{
+                          borderColor: theme.text + "20",
+                          backgroundColor: theme.cardBg + "66",
+                          color: theme.text,
+                        }}
+                      >
+                        {t.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+            return null;
+          })()}
+
+          {/* Special timers */}
+          {(() => {
+            const specials = timerConfigs.filter((t) =>
+              [
+                "study-timer",
+                "adhd-focus-timer",
+                "workout-rest-timer",
+                "meditation-timer",
+              ].includes(t.slug)
+            );
+            if (specials.length > 0) {
+              return (
+                <div className="space-y-3">
+                  <h3
+                    className="text-xs font-medium text-center"
+                    style={{ color: theme.text, opacity: 0.6 }}
+                  >
+                    Special Timers
+                  </h3>
+                  <div className="flex flex-wrap gap-3 justify-center">
+                    {specials.map((t) => (
+                      <Link
+                        key={t.slug}
+                        href={`/t/${t.slug}`}
+                        className="px-3 py-1 rounded-full border text-xs hover:opacity-70 transition"
+                        style={{
+                          borderColor: theme.text + "20",
+                          backgroundColor: theme.cardBg + "66",
+                          color: theme.text,
+                        }}
+                      >
+                        {t.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+            return null;
+          })()}
+        </div>
       </div>
     </div>
   );

@@ -10,7 +10,11 @@ import { useChime } from "@/hooks/useChime";
 import { useState, useEffect, useRef } from "react";
 import { darkenColor } from "@/lib/colorUtils";
 
-export function PomodoroTimer() {
+type PomodoroTimerProps = {
+  defaultMinutes?: number;
+};
+
+export function PomodoroTimer({ defaultMinutes }: PomodoroTimerProps = {}) {
   const { theme } = useTheme();
   const [soundEnabled, setSoundEnabled] = useState(false);
   const { play: playChime } = useChime();
@@ -30,7 +34,9 @@ export function PomodoroTimer() {
     skipPhase,
     setPhase,
     updateConfig,
-  } = usePomodoro();
+  } = usePomodoro(
+    defaultMinutes ? { focusMinutes: defaultMinutes } : undefined
+  );
 
   // Measure timer width and set progress bar width
   useEffect(() => {

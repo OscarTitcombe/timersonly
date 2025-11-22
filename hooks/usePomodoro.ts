@@ -28,8 +28,11 @@ export type UsePomodoroResult = {
   updateConfig: (partial: Partial<PomodoroConfig>) => void;
 };
 
-export function usePomodoro(): UsePomodoroResult {
-  const [config, setConfig] = useState<PomodoroConfig>(defaultPomodoroConfig);
+export function usePomodoro(initialConfig?: Partial<PomodoroConfig>): UsePomodoroResult {
+  const [config, setConfig] = useState<PomodoroConfig>({
+    ...defaultPomodoroConfig,
+    ...initialConfig,
+  });
   const [phase, setPhase] = useState<PomodoroPhase>("focus");
   const [completedFocusSessions, setCompletedFocusSessions] = useState(0);
 

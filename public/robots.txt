@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://timersonly.com
+
+# Sitemaps
+Sitemap: https://timersonly.com/sitemap.xml

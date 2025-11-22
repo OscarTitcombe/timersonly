@@ -12,3 +12,25 @@
   }
 }
 
+@layer utilities {
+  .shadow-long {
+    /* Shadow will be applied via inline styles with theme colors */
+  }
+
+  .shadow-long-lg {
+    /* Shadow will be applied via inline styles with theme colors */
+  }
+
+  .shadow-long-button {
+    /* Shadow will be applied via inline styles with theme colors */
+  }
+
+  .shadow-long-button-hover {
+    transform: translate(-1px, -1px);
+  }
+
+  .shadow-long-panel {
+    /* Shadow will be applied via inline styles with theme colors */
+  }
+}
+

@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useTheme } from "./ThemeProvider";
 import { themes, ThemeId } from "@/lib/themes";
+import { darkenColor } from "@/lib/colorUtils";
 
 export function ThemePicker() {
   const { theme, themeId, setThemeId } = useTheme();
@@ -67,8 +68,11 @@ export function ThemePicker() {
       {/* Dropdown menu */}
       {isOpen && (
         <div
-          className="absolute top-10 right-0 z-20 rounded-md border border-black/10 py-1.5 shadow-lg min-w-[140px]"
-          style={{ backgroundColor: theme.cardBg }}
+          className="absolute top-10 right-0 z-20 rounded-md border border-black/10 py-1.5 min-w-[140px]"
+          style={{ 
+            backgroundColor: theme.cardBg,
+            boxShadow: `5px 5px 0 ${darkenColor(theme.cardBg, 25)}`,
+          }}
         >
           {themes.map((t) => (
             <button

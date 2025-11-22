@@ -5,6 +5,7 @@ import { useTimer, UseTimerResult } from "./useTimer";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "./ThemeProvider";
 import { SimpleTimerSettings } from "./SimpleTimerSettings";
+import { darkenColor } from "@/lib/colorUtils";
 
 type NumericTimerProps = {
   defaultMinutes?: number;
@@ -111,10 +112,19 @@ export function NumericTimer({
         {/* Start/Pause button */}
         <button
           onClick={handleToggle}
-          className="px-10 py-4 rounded-lg font-semibold text-base shadow-md transition-all hover:shadow-lg"
+          className="px-10 py-4 rounded-lg font-semibold text-base transition-all"
           style={{
             backgroundColor: theme.accent,
             color: "#FFFFFF",
+            boxShadow: `4px 4px 0 ${darkenColor(theme.accent, 30)}`,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = `5px 5px 0 ${darkenColor(theme.accent, 35)}`;
+            e.currentTarget.style.transform = 'translate(-1px, -1px)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = `4px 4px 0 ${darkenColor(theme.accent, 30)}`;
+            e.currentTarget.style.transform = 'translate(0, 0)';
           }}
         >
           <div className="flex items-center gap-2">

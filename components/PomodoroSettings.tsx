@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { PomodoroConfig } from "@/lib/pomodoro";
 import { useTheme } from "./ThemeProvider";
+import { darkenColor } from "@/lib/colorUtils";
 
 type PomodoroSettingsProps = {
   config: PomodoroConfig;
@@ -50,8 +51,11 @@ export function PomodoroSettings({ config, onChange }: PomodoroSettingsProps) {
 
           {/* Settings panel */}
           <div
-            className="absolute top-12 right-0 z-20 rounded-lg border border-black/10 p-4 shadow-lg"
-            style={{ backgroundColor: theme.cardBg }}
+            className="absolute top-12 right-0 z-20 rounded-lg border border-black/10 p-4"
+            style={{ 
+              backgroundColor: theme.cardBg,
+              boxShadow: `5px 5px 0 ${darkenColor(theme.cardBg, 25)}`,
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex flex-col gap-3 min-w-[200px]">

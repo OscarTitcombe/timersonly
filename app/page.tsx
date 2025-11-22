@@ -11,6 +11,7 @@ import { useTimer } from "@/components/useTimer";
 import { useTimerHotkeys } from "@/hooks/useTimerHotkeys";
 import { useChime } from "@/hooks/useChime";
 import { minutesToSeconds } from "@/lib/time";
+import { darkenColor } from "@/lib/colorUtils";
 import { useEffect, useRef } from "react";
 
 type TimerKind = "simple" | "pomodoro";
@@ -95,8 +96,11 @@ export default function HomePage() {
             )}
             {/* Kind toggle */}
             <div
-              className="inline-flex rounded-lg p-1 shadow-sm"
-              style={{ backgroundColor: theme.cardBg }}
+              className="inline-flex rounded-lg p-1"
+              style={{ 
+                backgroundColor: theme.cardBg,
+                boxShadow: `4px 4px 0 ${darkenColor(theme.cardBg, 25)}`,
+              }}
             >
               <button
                 onClick={() => setKind("simple")}

@@ -8,6 +8,7 @@ import { PomodoroSettings } from "./PomodoroSettings";
 import { useTimerHotkeys } from "@/hooks/useTimerHotkeys";
 import { useChime } from "@/hooks/useChime";
 import { useState, useEffect, useRef } from "react";
+import { darkenColor } from "@/lib/colorUtils";
 
 export function PomodoroTimer() {
   const { theme } = useTheme();
@@ -139,10 +140,19 @@ export function PomodoroTimer() {
         {/* Start/Pause button */}
         <button
           onClick={handleToggle}
-          className="px-8 py-3 rounded-lg font-semibold text-sm shadow-md transition-all hover:shadow-lg"
+          className="px-8 py-3 rounded-lg font-semibold text-sm transition-all"
           style={{
             backgroundColor: theme.accent,
             color: "#FFFFFF",
+            boxShadow: `4px 4px 0 ${darkenColor(theme.accent, 30)}`,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = `5px 5px 0 ${darkenColor(theme.accent, 35)}`;
+            e.currentTarget.style.transform = 'translate(-1px, -1px)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = `4px 4px 0 ${darkenColor(theme.accent, 30)}`;
+            e.currentTarget.style.transform = 'translate(0, 0)';
           }}
         >
           <div className="flex items-center gap-2">

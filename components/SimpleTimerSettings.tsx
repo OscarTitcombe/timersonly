@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTheme } from "./ThemeProvider";
 import { minutesToSeconds } from "@/lib/time";
+import { darkenColor } from "@/lib/colorUtils";
 
 type SimpleTimerSettingsProps = {
   currentMinutes: number;
@@ -57,8 +58,11 @@ export function SimpleTimerSettings({
 
           {/* Settings panel */}
           <div
-            className="absolute top-12 right-0 z-20 rounded-lg border border-black/10 p-4 shadow-lg"
-            style={{ backgroundColor: theme.cardBg }}
+            className="absolute top-12 right-0 z-20 rounded-lg border border-black/10 p-4"
+            style={{ 
+              backgroundColor: theme.cardBg,
+              boxShadow: `5px 5px 0 ${darkenColor(theme.cardBg, 25)}`,
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex flex-col gap-3 min-w-[200px]">
@@ -81,10 +85,19 @@ export function SimpleTimerSettings({
               </div>
               <button
                 onClick={handleApply}
-                className="px-3 py-1.5 text-xs font-medium rounded-md transition-opacity hover:opacity-80"
+                className="px-3 py-1.5 text-xs font-medium rounded-md transition-all"
                 style={{
                   backgroundColor: theme.accent,
                   color: "#FFFFFF",
+                  boxShadow: `3px 3px 0 ${darkenColor(theme.accent, 30)}`,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = `4px 4px 0 ${darkenColor(theme.accent, 35)}`;
+                  e.currentTarget.style.transform = 'translate(-1px, -1px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = `3px 3px 0 ${darkenColor(theme.accent, 30)}`;
+                  e.currentTarget.style.transform = 'translate(0, 0)';
                 }}
               >
                 Apply

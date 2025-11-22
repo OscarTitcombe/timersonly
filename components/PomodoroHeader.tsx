@@ -2,6 +2,7 @@
 
 import { PomodoroPhase } from "@/lib/pomodoro";
 import { useTheme } from "./ThemeProvider";
+import { darkenColor } from "@/lib/colorUtils";
 
 type PomodoroHeaderProps = {
   phase: PomodoroPhase;
@@ -28,8 +29,11 @@ export function PomodoroHeader({
   return (
     <div className="flex justify-center mb-8">
       <div
-        className="inline-flex rounded-lg p-1 shadow-sm"
-        style={{ backgroundColor: theme.cardBg }}
+        className="inline-flex rounded-lg p-1"
+        style={{ 
+          backgroundColor: theme.cardBg,
+          boxShadow: `4px 4px 0 ${darkenColor(theme.cardBg, 25)}`,
+        }}
       >
         {phases.map((p) => (
           <button

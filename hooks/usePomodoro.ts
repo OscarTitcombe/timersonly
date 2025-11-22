@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   PomodoroConfig,
   PomodoroPhase,
@@ -68,18 +68,44 @@ export function usePomodoro(): UsePomodoroResult {
     onComplete: handlePhaseComplete,
   });
 
+  // Track previous phase and config to only update when they actually change
+  const prevPhaseRef = useRef<PomodoroPhase>(phase);
+  const prevConfigRef = useRef<PomodoroConfig>(config);
+  const timerHasStartedRef = useRef(false);
+
+  // Track when timer starts
+  useEffect(() => {
+    if (timer.isRunning) {
+      timerHasStartedRef.current = true;
+    }
+  }, [timer.isRunning]);
+
   // Update timer duration when phase or config changes
   useEffect(() => {
-    const newDuration = getPhaseDurationSeconds(phase, config);
-    timer.setDuration(newDuration);
-    if (!timer.isRunning) {
-      timer.reset(newDuration);
+    const phaseChanged = prevPhaseRef.current !== phase;
+    const configChanged = 
+      prevConfigRef.current.focusMinutes !== config.focusMinutes ||
+      prevConfigRef.current.shortBreakMinutes !== config.shortBreakMinutes ||
+      prevConfigRef.current.longBreakMinutes !== config.longBreakMinutes ||
+      prevConfigRef.current.longBreakInterval !== config.longBreakInterval;
+
+    if (phaseChanged || configChanged) {
+      const newDuration = getPhaseDurationSeconds(phase, config);
+      timer.setDuration(newDuration);
+      // Only reset if timer hasn't been started yet
+      if (!timerHasStartedRef.current) {
+        timer.reset(newDuration);
+      }
+      prevPhaseRef.current = phase;
+      prevConfigRef.current = config;
     }
-  }, [phase, config, timer]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, config]);
 
   const resetPhase = useCallback(() => {
     const newDuration = getPhaseDurationSeconds(phase, config);
     timer.reset(newDuration);
+    timerHasStartedRef.current = false;
   }, [phase, config, timer]);
 
   const skipPhase = useCallback(() => {
@@ -97,6 +123,7 @@ export function usePomodoro(): UsePomodoroResult {
     setPhase(nextPhase);
     const newDuration = getPhaseDurationSeconds(nextPhase, config);
     timer.reset(newDuration);
+    timerHasStartedRef.current = false;
   }, [phase, completedFocusSessions, config, getNextPhase, timer]);
 
   const setPhaseManually = useCallback(
@@ -104,6 +131,7 @@ export function usePomodoro(): UsePomodoroResult {
       setPhase(newPhase);
       const newDuration = getPhaseDurationSeconds(newPhase, config);
       timer.reset(newDuration);
+      timerHasStartedRef.current = false;
       // Don't increment session count when manually changing phase
     },
     [config, timer]

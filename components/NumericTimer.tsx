@@ -4,6 +4,7 @@ import { formatSeconds, minutesToSeconds } from "@/lib/time";
 import { useTimer, UseTimerResult } from "./useTimer";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "./ThemeProvider";
+import { SimpleTimerSettings } from "./SimpleTimerSettings";
 
 type NumericTimerProps = {
   defaultMinutes?: number;
@@ -110,7 +111,7 @@ export function NumericTimer({
         {/* Start/Pause button */}
         <button
           onClick={handleToggle}
-          className="px-8 py-3 rounded-lg font-semibold text-sm shadow-md transition-all hover:shadow-lg"
+          className="px-10 py-4 rounded-lg font-semibold text-base shadow-md transition-all hover:shadow-lg"
           style={{
             backgroundColor: theme.accent,
             color: "#FFFFFF",
@@ -120,8 +121,8 @@ export function NumericTimer({
             {isRunning ? (
               <>
                 <svg
-                  width="16"
-                  height="16"
+                  width="18"
+                  height="18"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                 >
@@ -133,8 +134,8 @@ export function NumericTimer({
             ) : (
               <>
                 <svg
-                  width="16"
-                  height="16"
+                  width="18"
+                  height="18"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                 >
@@ -145,6 +146,18 @@ export function NumericTimer({
             )}
           </div>
         </button>
+
+        {/* Settings button */}
+        <SimpleTimerSettings
+          currentMinutes={Math.round(localDurationSeconds / 60)}
+          onDurationChange={(minutes) => {
+            const seconds = minutesToSeconds(minutes);
+            setLocalDurationSeconds(seconds);
+            reset(seconds);
+            setDuration(seconds);
+            onPresetChange?.(seconds);
+          }}
+        />
       </div>
 
       {/* Preset buttons - optional, smaller */}

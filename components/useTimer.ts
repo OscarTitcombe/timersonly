@@ -36,10 +36,23 @@ export function useTimer(options: UseTimerOptions): UseTimerResult {
     onCompleteRef.current = onComplete;
   }, [onComplete]);
 
-  // Update when initialSeconds changes externally
+  // Track if timer has ever been started
+  const hasStartedRef = useRef(false);
+
+  // Update when initialSeconds changes externally (only when timer hasn't been used yet)
   useEffect(() => {
+    const prevInitial = currentInitialSecondsRef.current;
     currentInitialSecondsRef.current = initialSeconds;
-    if (!isRunning) {
+    
+    // Only update if:
+    // 1. initialSeconds actually changed
+    // 2. Timer has never been started (hasStartedRef is false)
+    // 3. Timer is not currently running
+    if (
+      prevInitial !== initialSeconds &&
+      !hasStartedRef.current &&
+      !isRunning
+    ) {
       pausedRemainingRef.current = initialSeconds;
       setRemainingSeconds(initialSeconds);
     }
@@ -78,6 +91,9 @@ export function useTimer(options: UseTimerOptions): UseTimerResult {
   const start = () => {
     if (isRunning) return;
     
+    // Mark that timer has been started
+    hasStartedRef.current = true;
+    
     // Record the current remaining seconds and start time
     pausedRemainingRef.current = remainingSeconds;
     startTimeRef.current = performance.now();
@@ -93,11 +109,15 @@ export function useTimer(options: UseTimerOptions): UseTimerResult {
     const now = performance.now();
     const elapsed = (now - startTimeRef.current) / 1000;
     const newRemaining = pausedRemainingRef.current - elapsed;
-    pausedRemainingRef.current = Math.max(0, newRemaining);
+    const clampedRemaining = Math.max(0, newRemaining);
     
+    // Update state first
+    pausedRemainingRef.current = clampedRemaining;
+    setRemainingSeconds(clampedRemaining);
+    
+    // Then stop the timer
     setIsRunning(false);
     startTimeRef.current = null;
-    setRemainingSeconds(pausedRemainingRef.current);
   };
 
   const reset = (nextInitialSeconds?: number) => {
@@ -108,6 +128,7 @@ export function useTimer(options: UseTimerOptions): UseTimerResult {
     setIsRunning(false);
     startTimeRef.current = null;
     hasCompletedRef.current = false;
+    hasStartedRef.current = false; // Reset the started flag
   };
 
   const setDuration = (seconds: number) => {
